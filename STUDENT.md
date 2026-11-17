@@ -11,7 +11,7 @@
 
 ## Kết quả tóm tắt (điền cuối bài; số lấy từ `submission/qc/*`, kèm mẫu số)
 
-- Máy: accepted / edited / deleted: 479 / 4 / 19 (mẫu số: 502 box máy); added: 6 (mẫu số: 489 đối tượng)
+- Máy: accepted / edited / deleted: 474 / 4 / 24 (mẫu số: 502 box máy); added: 6 (mẫu số: 484 đối tượng)
 - So với gold: precision / recall của **máy** 44.3% / 88.6% (4 ảnh, 35 đối tượng gold)
 - Bắt bẫy: 12/12 = 100%
 - Thời gian: gán tay 3.75 phút/ảnh; duyệt có pre-label 3.75 phút/ảnh

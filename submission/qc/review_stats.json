@@ -2,29 +2,30 @@
  "mode": "det",
  "images": 24,
  "pre_boxes": 502,
- "final_objects": 489,
- "accepted": 479,
+ "final_objects": 484,
+ "accepted": 474,
  "edited": 4,
- "deleted": 19,
+ "deleted": 24,
  "added": 6,
  "class_changed_info": 2,
- "accepted_rate": 0.954183266932271,
+ "accepted_rate": 0.9442231075697212,
  "edited_rate": 0.00796812749003984,
- "deleted_rate": 0.037848605577689244,
- "added_rate": 0.012269938650306749,
+ "deleted_rate": 0.04780876494023904,
+ "added_rate": 0.012396694214876033,
  "per_class": {
   "person": {
-   "accepted": 250,
-   "deleted": 3
+   "accepted": 249,
+   "deleted": 4
   },
   "motorbike": {
-   "accepted": 131,
-   "deleted": 6,
+   "accepted": 129,
+   "deleted": 8,
    "edited": 2,
    "added": 4
   },
   "bicycle": {
-   "accepted": 7
+   "accepted": 6,
+   "deleted": 1
   },
   "three_wheeler": {
    "edited": 2,
@@ -36,8 +37,8 @@
    "accepted": 6
   },
   "car": {
-   "accepted": 51,
-   "deleted": 2
+   "accepted": 50,
+   "deleted": 3
   },
   "bus": {
    "accepted": 3

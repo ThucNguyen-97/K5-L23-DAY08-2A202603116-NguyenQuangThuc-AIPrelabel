@@ -11,7 +11,7 @@
 | three_wheeler | YOLOE-26s, prompt `tuk-tuk`, `cyclo`, `cargo tricycle` | 0.15 | `threshold_sweep`: recall 100% (7/7), precision 78% (7/9). Nguồn: `yoloe_twheel` và `qc/threshold_sweep.csv`. |
 
 - Lệnh `merge_prelabels.py` sẽ dùng ở Part 4: `python scripts/merge_prelabels.py work/prelabel/yoloe_all/pre.coco.json work/prelabel/y26_all/pre.coco.json --thr "person=0.35,three_wheeler=0.15" --conf 0.3 --iou 0.6 --split "batch,gold" --out work/prelabel/merged_review/pre.coco.json`
-- **Phiên bản SAM bạn chọn**: SAM 2.1; đã tạo mask cho 4 ảnh pilot với 57 box, nhưng chất lượng mask phụ thuộc vào độ chính xác của box YOLO.
+- **Phiên bản SAM bạn chọn**: SAM 2.1 Base (`sam2.1_b.pt`); chọn vì chất lượng mask tốt hơn bản nhẹ trong các vật bị che, vẫn phù hợp với bài lab và đã có sẵn trong bộ model core. Đổi lại, chạy CPU chậm hơn (6.33 giây/ảnh trong `work/runs.csv`); đã tạo mask cho 4 ảnh custom với 57 box. Chất lượng mask vẫn phụ thuộc vào độ chính xác của box YOLO.
 - Lỗi không sửa được chỉ bằng đổi ngưỡng là lỗi sai lớp, đặc biệt tuk-tuk/xích lô bị gọi là `car` hoặc `truck`. Cách xử lý là dùng prompt YOLOE cho `three_wheeler`, merge theo ngưỡng riêng và review thủ công các box còn nghi ngờ.
 - Box điểm cao vẫn có thể sai lớp ở các cảnh xe ba bánh; ngược lại, box `three_wheeler` điểm thấp vẫn có thể đúng khi vật bị che hoặc ở xa. Vì vậy `conf` chỉ dùng để ưu tiên review, không dùng thay cho kiểm tra ảnh. Ví dụ cần chú ý: `img_003.jpg`, `img_013.jpg` và `img_014.jpg`.
 - Giới hạn: chọn ngưỡng trên chính gold (4 ảnh, 35 đối tượng) nên precision/recall trên gold là lạc quan; các lớp có ít mẫu chỉ cho kết luận yếu.
@@ -20,18 +20,19 @@
 
 | Trạng thái | Số | Tỉ lệ | Mẫu số |
 |---|---|---|---|
-| accepted | 479 | 479/502 = 95.4% | 502 box máy |
+| accepted | 474 | 474/502 = 94.4% | 502 box máy |
 | edited | 4 | 4/502 = 0.8% | 502 box máy |
-| deleted | 19 | 19/502 = 3.8% | 502 box máy |
-| added | 6 | 6/489 = 1.2% | 489 đối tượng sau duyệt |
+| deleted | 24 | 24/502 = 4.8% | 502 box máy |
+| added | 6 | 6/484 = 1.2% | 484 đối tượng sau duyệt |
 
-- Lớp máy cần review kỹ nhất là `motorbike` và `three_wheeler`: `motorbike` có 6 box bị xoá, 4 box được thêm và 2 box chỉnh sửa; `three_wheeler` có 8 box bị xoá và 2 box chỉnh sửa. Lỗi tăng ở các cảnh nhiều phương tiện và vật thể nhỏ.
+- Lớp máy cần review kỹ nhất là `motorbike` và `three_wheeler`: `motorbike` có 8 box bị xoá, 4 box được thêm và 2 box chỉnh sửa; `three_wheeler` có 8 box bị xoá và 2 box chỉnh sửa. Lỗi tăng ở các cảnh nhiều phương tiện và vật thể nhỏ.
 - So với gold: precision **44.3%** và recall **88.6%** của máy, trên 4 ảnh với **35 đối tượng gold** (`qc/review_stats.md`). Đây là kết quả in-sample và chỉ mang tính ước lượng.
 
 ## 3. Thiên kiến tự động hóa và ảnh bẫy
 
 - Bắt bẫy: **12/12 = 100%**; loose 3/3, extra 3/3, missing 3/3, wrong_class 3/3; không còn bẫy nào lọt (`qc/review_stats.md`). Kết quả cho thấy việc quét ảnh trước khi tin vào nhãn máy và kiểm tra theo từng loại lỗi đã hiệu quả.
-- Accepted cao (95.4%) đồng thời bắt bẫy đạt 100% cho thấy pre-label khá ổn ở nhiều box, nhưng vẫn cần review có hệ thống vì accepted không đồng nghĩa box luôn đúng.
+- Phân tích bẫy: 3/3 `loose` được phát hiện nhờ kiểm tra box ôm sát; 3/3 `extra` được loại sau bước kiểm tra vật thật; 3/3 `missing` được bổ sung nhờ quét ảnh trước khi xem pre-label; 3/3 `wrong_class` được sửa khi đối chiếu taxonomy. Không có bẫy lọt nên không có bước checklist bị bỏ qua trong lô này; rủi ro còn lại là thiên kiến tự động hóa vẫn có thể xuất hiện ngoài 12 bẫy.
+- Accepted cao (94.4%) đồng thời bắt bẫy đạt 100% cho thấy pre-label khá ổn ở nhiều box, nhưng vẫn cần review có hệ thống vì accepted không đồng nghĩa box luôn đúng.
 
 ## 4. Máy có đáng dùng không?
 
@@ -58,6 +59,7 @@
 - Số quyết định: **3** (`calibration_decisions.csv`); quan trọng nhất: `CAL-01` về vật nhỏ và cụm xe, `CAL-02` về tách người khỏi mask xe, `CAL-03` về hàng hóa trên xe đạp.
 - Quy tắc mới đã vào `guideline_v1.1_calibrated.md`: vật cao dưới 20 px dùng `ignore_region` khi phù hợp; mask xe không gộp người; hàng hóa gắn liền thuộc xe nhưng không bao người hoặc bóng.
 - Nguyên nhân gốc: guideline v1.0 còn câu hỏi mở, mô hình có lỗi phân lớp/biên mask và vật nhỏ ở xa khó tách.
+- Gold không có box `can_review` vì các ca trong 4 ảnh đã đủ rõ để chốt theo guideline; `can_review` chỉ nên dùng cho ca không chắc quy tắc, không dùng cho mọi box khó vẽ.
 
 ## 7. QC và quyết định (Part 6)
 

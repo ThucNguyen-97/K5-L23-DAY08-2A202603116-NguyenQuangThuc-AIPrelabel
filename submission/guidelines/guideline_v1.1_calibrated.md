@@ -7,7 +7,7 @@
 
 | # | Câu hỏi | Quyết định | Ảnh ví dụ | `case_id` |
 |---|---|---|---|---|
-| 1 | Xe đạp điện: bicycle hay motorbike? | Chưa gặp ca đủ rõ để chốt; tiếp tục gán `can_review` khi không chắc. | img_031 | CAL-03 |
+| 1 | Xe đạp điện: bicycle hay motorbike? | Xe có bàn đạp và không thấy động cơ thì gán `bicycle`; có động cơ/đặc điểm xe máy thì gán `motorbike`; không đủ rõ thì tick `can_review`. | img_031 | CAL-03 |
 
 ## 2. Ca khó mới (từ lỗi của máy, bẫy lọt, box `can_review`)
 

@@ -1,25 +1,25 @@
 # Số đo review (det)
 
-- Ảnh tính: 24 (batch,gold); box máy: 502; đối tượng sau duyệt: 489; ngưỡng accepted: IoU >= 0.9
+- Ảnh tính: 24 (batch,gold); box máy: 502; đối tượng sau duyệt: 484; ngưỡng accepted: IoU >= 0.9
 - Đã **loại 23 đối tượng nằm quanh các bẫy** khỏi bảng này: lỗi nhân tạo không phản ánh chất lượng máy.
 
 ## 1. Bốn trạng thái (AI error profile)
 | Trạng thái | Số | Tỉ lệ | Mẫu số |
 |---|---|---|---|
-| accepted (giữ nguyên) | 479 | 479/502 = 95.4% | 502 box máy |
+| accepted (giữ nguyên) | 474 | 474/502 = 94.4% | 502 box máy |
 | edited (sửa) | 4 | 4/502 = 0.8% | 502 box máy |
-| deleted (xoá) | 19 | 19/502 = 3.8% | 502 box máy |
-| added (vẽ thêm) | 6 | 6/489 = 1.2% | 489 đối tượng sau duyệt |
+| deleted (xoá) | 24 | 24/502 = 4.8% | 502 box máy |
+| added (vẽ thêm) | 6 | 6/484 = 1.2% | 484 đối tượng sau duyệt |
 
 Trong số deleted + added, **2 trường hợp là đổi lớp** (máy gán sai lớp, box đúng chỗ): đó không phải máy bỏ sót. Số vật máy **sót thật** ≈ added − đổi lớp = 4.
 
 ### Theo lớp
 | Lớp | accepted | edited | deleted | added |
 |---|---|---|---|---|
-| person | 250 | 0 | 3 | 0 |
-| bicycle | 7 | 0 | 0 | 0 |
-| motorbike | 131 | 2 | 6 | 4 |
-| car | 51 | 0 | 2 | 0 |
+| person | 249 | 0 | 4 | 0 |
+| bicycle | 6 | 0 | 1 | 0 |
+| motorbike | 129 | 2 | 8 | 4 |
+| car | 50 | 0 | 3 | 0 |
 | bus | 3 | 0 | 0 | 0 |
 | truck | 6 | 0 | 0 | 2 |
 | three_wheeler | 31 | 2 | 8 | 0 |
