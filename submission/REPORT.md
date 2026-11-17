@@ -1,4 +1,4 @@
-# Báo cáo Day 08 — <<MSHV - Họ và tên>>
+# Báo cáo Day 08 — 2A202603116 - Nguyễn Quang Thức
 
 > Một file duy nhất cho cả bài (đã gộp recipe, QC và ghi chú cá nhân). Mọi con số kèm **mẫu số** và nguồn (file nào). Viết bằng lời của bạn.
 
@@ -6,14 +6,15 @@
 
 | Lớp | Model + cỡ | Ngưỡng | Vì sao (dẫn `run_id` trong `model_log.csv`) |
 |---|---|---|---|
-| person / bicycle / motorbike / car / bus / truck | <<YOLO26m>> | <<theo lớp, từ threshold_sweep>> | <<>> |
-| three_wheeler | <<YOLOE-26s, prompt: ...>> | <<>> | <<>> |
+| person | YOLO26m | 0.35 | `threshold_sweep`: recall 92% (11/12), đạt mục tiêu recall 90%; precision 35% (11/31). Nguồn: `y26_c025`, `y26_c050` và `qc/threshold_sweep.csv`. |
+| bicycle / motorbike / car / bus / truck | YOLO26m | mặc định 0.3 | Không chọn ngưỡng riêng: bicycle và bus có dưới 5 mẫu gold; truck không có mẫu; motorbike và car không đạt recall 90% ở các ngưỡng <= 0.5. |
+| three_wheeler | YOLOE-26s, prompt `tuk-tuk`, `cyclo`, `cargo tricycle` | 0.15 | `threshold_sweep`: recall 100% (7/7), precision 78% (7/9). Nguồn: `yoloe_twheel` và `qc/threshold_sweep.csv`. |
 
-- Lệnh `merge_prelabels.py` đã dùng (dán nguyên): <<>>
-- **Phiên bản SAM bạn chọn** (SAM 1 / 2.1 / 3) và lý do: <<chất lượng mask, tốc độ, RAM, quyền truy cập>>
+- Lệnh `merge_prelabels.py` sẽ dùng ở Part 4: `python scripts/merge_prelabels.py work/prelabel/yoloe_all/pre.coco.json work/prelabel/y26_all/pre.coco.json --thr "person=0.35,three_wheeler=0.15" --conf 0.3 --iou 0.6 --split "batch,gold" --out work/prelabel/merged_review/pre.coco.json`
+- **Phiên bản SAM bạn chọn**: SAM 2.1; đã tạo mask cho 4 ảnh pilot với 57 box, nhưng chất lượng mask phụ thuộc vào độ chính xác của box YOLO.
 - Lỗi nào **không sửa được bằng đổi ngưỡng** (ví dụ tuk-tuk bị gọi `car`)? Sửa thế nào? <<>>
 - Box **điểm cao mà sai** hoặc **điểm thấp mà đúng** (ảnh nào): <<>>
-- Giới hạn: chọn ngưỡng trên chính gold (4 ảnh) nên số đo máy trên gold là lạc quan: <<>>
+- Giới hạn: chọn ngưỡng trên chính gold (4 ảnh, 35 đối tượng) nên precision/recall trên gold là lạc quan; các lớp có ít mẫu chỉ cho kết luận yếu.
 
 ## 2. AI error profile (từ `qc/review_stats.md`)
 
