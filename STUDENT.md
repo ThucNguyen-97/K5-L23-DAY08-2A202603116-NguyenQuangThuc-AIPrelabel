@@ -4,7 +4,7 @@
 - MSHV: 2A202603116
 - Lớp (L2 / L3 / khác): L2
 - Tài khoản GitHub: https://github.com/ThucNguyen-97
-- Repo bài nộp (URL): https://github.com/ThucNguyen-97/K5-L23-Day08-2A202603116-NguyenQuangThuc-AI-Assisted-Labeling
+- Repo bài nộp (URL): https://github.com/ThucNguyen-97/K5-L23-DAY08-2A202603116-NguyenQuangThuc-AIPrelabel
 - Commit chốt bài (hash): <<>>
 - Máy: Windows, không có GPU (CPU)
 - CVAT (Docker): v2.82.0
