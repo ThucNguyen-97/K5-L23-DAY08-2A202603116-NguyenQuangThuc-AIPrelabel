@@ -12,8 +12,8 @@
 
 - Lệnh `merge_prelabels.py` sẽ dùng ở Part 4: `python scripts/merge_prelabels.py work/prelabel/yoloe_all/pre.coco.json work/prelabel/y26_all/pre.coco.json --thr "person=0.35,three_wheeler=0.15" --conf 0.3 --iou 0.6 --split "batch,gold" --out work/prelabel/merged_review/pre.coco.json`
 - **Phiên bản SAM bạn chọn**: SAM 2.1; đã tạo mask cho 4 ảnh pilot với 57 box, nhưng chất lượng mask phụ thuộc vào độ chính xác của box YOLO.
-- Lỗi nào **không sửa được bằng đổi ngưỡng** (ví dụ tuk-tuk bị gọi `car`)? Sửa thế nào? <<>>
-- Box **điểm cao mà sai** hoặc **điểm thấp mà đúng** (ảnh nào): <<>>
+- Lỗi không sửa được chỉ bằng đổi ngưỡng là lỗi sai lớp, đặc biệt tuk-tuk/xích lô bị gọi là `car` hoặc `truck`. Cách xử lý là dùng prompt YOLOE cho `three_wheeler`, merge theo ngưỡng riêng và review thủ công các box còn nghi ngờ.
+- Box điểm cao vẫn có thể sai lớp ở các cảnh xe ba bánh; ngược lại, box `three_wheeler` điểm thấp vẫn có thể đúng khi vật bị che hoặc ở xa. Vì vậy `conf` chỉ dùng để ưu tiên review, không dùng thay cho kiểm tra ảnh. Ví dụ cần chú ý: `img_003.jpg`, `img_013.jpg` và `img_014.jpg`.
 - Giới hạn: chọn ngưỡng trên chính gold (4 ảnh, 35 đối tượng) nên precision/recall trên gold là lạc quan; các lớp có ít mẫu chỉ cho kết luận yếu.
 
 ## 2. AI error profile (từ `qc/review_stats.md`)
@@ -55,26 +55,26 @@
 
 ## 6. Calibration (Part 6)
 
-- Số quyết định: <<>> (`calibration_decisions.csv`); quan trọng nhất (dẫn `CAL-xx`): <<>>
-- Quy tắc mới đã vào `guideline_v1.1_calibrated.md`: <<>>
-- Nguyên nhân gốc: <<guideline mơ hồ / chưa nắm quy tắc / máy>>
+- Số quyết định: **3** (`calibration_decisions.csv`); quan trọng nhất: `CAL-01` về vật nhỏ và cụm xe, `CAL-02` về tách người khỏi mask xe, `CAL-03` về hàng hóa trên xe đạp.
+- Quy tắc mới đã vào `guideline_v1.1_calibrated.md`: vật cao dưới 20 px dùng `ignore_region` khi phù hợp; mask xe không gộp người; hàng hóa gắn liền thuộc xe nhưng không bao người hoặc bóng.
+- Nguyên nhân gốc: guideline v1.0 còn câu hỏi mở, mô hình có lỗi phân lớp/biên mask và vật nhỏ ở xa khó tách.
 
 ## 7. QC và quyết định (Part 6)
 
-- Mẫu: <<n>> ảnh (<<m>> ảnh `can_review` + <<k>> ngẫu nhiên, seed 42); người kiểm: bạn (**hạn chế**: bạn vừa là người duyệt).
-- Lỗi theo **đối tượng**: <<.../... = ...%>> · theo **ảnh**: <<.../... = ...%>> (ngưỡng Release ≤ 2%)
-- Top lỗi (trong: bỏ sót, thừa, sai lớp, sai vị trí/kích thước, sai thuộc tính, sai mask) + một ảnh ví dụ mỗi loại: <<>>
-- **Giới hạn mẫu nhỏ** (cận trên 95% trong `qc_report_auto.md`): <<>>
-- Script kiểm được / không kiểm được (ví dụ ôm sát, cùng bỏ sót với máy, theo checklist thật): <<>>
+- Mẫu: **5 ảnh** (0 ảnh `can_review` + 5 ảnh ngẫu nhiên, seed 42); người kiểm: bạn (**hạn chế**: bạn vừa là người duyệt).
+- Lỗi theo **đối tượng**: **0/105 = 0.0%** · theo **ảnh**: **0/5 = 0.0%** (ngưỡng Release ≤ 2%).
+- Top lỗi: không ghi nhận lỗi nào trong mẫu QC; vì vậy không có ảnh lỗi đại diện trong mẫu.
+- **Giới hạn mẫu nhỏ** (cận trên 95% trong `qc_report_auto.md`): với 0/5 ảnh lỗi, cận trên Wilson là **43%**; mẫu nhỏ không thể chứng minh chắc chắn tỉ lệ lỗi thật ≤2%.
+- Script kiểm được tên/lớp/box, số lượng ảnh, box nhỏ và các số đo QC; không kiểm được box có ôm sát vật thật, vật mà cả người và máy cùng bỏ sót, hoặc việc tuân thủ checklist bằng mắt.
 
-**Quyết định: <<Release / Hold / Rework>>**, ngày <<YYYY-MM-DD>>. Lý do (đi theo Hold → Rework → Release): <<>>
-Nếu Rework / Hold, việc cần làm tiếp: <<>>
+**Quyết định: Release**, ngày 2026-11-17. Lý do: không có lỗi trong 5/5 ảnh QC, bẫy đạt 12/12 và không phát hiện lỗi hệ thống; tuy nhiên kết luận có giới hạn do mẫu nhỏ.
+Nếu Rework / Hold, việc cần làm tiếp: không áp dụng; khi dùng thực tế vẫn nên tăng kích thước mẫu QC.
 
 ## 8. Ghi chú cá nhân
 
-- **Dùng AI để làm bài** (công cụ nào, việc gì, kiểm tra thế nào; "không dùng" nếu không): <<>>
-- Gold có bị nhiễm không (bạn có nhìn pre-label hay hỏi AI trước khi gán xong)? <<không / có, như sau: ...>>
-- Máy / GPU / CVAT dùng; vướng mắc cài đặt: <<>>
-- Dùng cache `data/cache/` thay vì tự chạy? <<không / có, vì ...>>
-- Lỗi / bug script đã gặp (nếu có): <<>>
-- Một điều bạn làm khác lần sau: <<>>
+- **Dùng AI để làm bài**: dùng trợ lý AI để đọc hướng dẫn, giải thích quy trình, hỗ trợ chạy script, kiểm tra file và tổng hợp nhận xét; các quyết định gán nhãn, review CVAT và click SAM do học viên kiểm tra.
+- Gold có bị nhiễm không: **không**; 4 ảnh gold được gán thủ công trước khi dùng pre-label.
+- Máy / GPU / CVAT dùng; vướng mắc cài đặt: Windows, CPU không có GPU, CVAT Docker v2.82.0; không ghi nhận vướng mắc cài đặt nghiêm trọng.
+- Dùng cache `data/cache/` thay vì tự chạy? **không**; các model và script được chạy trong repo.
+- Lỗi / bug script đã gặp: phát hiện một nhãn `bus` sai lớp trong `img_013.jpg` khi review và sửa thành `three_wheeler`; không phải lỗi của script xuất.
+- Một điều bạn làm khác lần sau: tăng mẫu QC và đánh dấu `can_review` rõ hơn cho các ca mơ hồ trước khi chạy lấy mẫu.

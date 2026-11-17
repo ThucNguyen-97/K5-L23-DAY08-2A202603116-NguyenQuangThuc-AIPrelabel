@@ -1,0 +1,6 @@
+image,object_id,error_type,reviewer,note
+img_003.jpg,,khong,Nguyen Quang Thuc,"Đã kiểm tra toàn bộ 22 đối tượng; nhãn và vị trí phù hợp với ảnh."
+img_006.jpg,,khong,Nguyen Quang Thuc,"Đã kiểm tra toàn bộ 25 đối tượng; không ghi nhận lỗi bỏ sót, thừa hoặc sai lớp."
+img_014.jpg,,khong,Nguyen Quang Thuc,"Đã kiểm tra toàn bộ 22 đối tượng; các xe và người được tách riêng phù hợp."
+img_031.jpg,,khong,Nguyen Quang Thuc,"Đã kiểm tra 3 đối tượng; bicycle và hai person được gán đúng."
+img_035.jpg,,khong,Nguyen Quang Thuc,"Đã kiểm tra toàn bộ 33 đối tượng; không ghi nhận lỗi cần sửa."
