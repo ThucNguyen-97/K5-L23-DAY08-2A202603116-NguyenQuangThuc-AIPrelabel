@@ -20,27 +20,27 @@
 
 | Trạng thái | Số | Tỉ lệ | Mẫu số |
 |---|---|---|---|
-| accepted | <<>> | <<>> | <<box máy>> |
-| edited | <<>> | <<>> | <<>> |
-| deleted | <<>> | <<>> | <<>> |
-| added | <<>> | <<>> | <<đối tượng sau duyệt>> |
+| accepted | 479 | 479/502 = 95.4% | 502 box máy |
+| edited | 4 | 4/502 = 0.8% | 502 box máy |
+| deleted | 19 | 19/502 = 3.8% | 502 box máy |
+| added | 6 | 6/489 = 1.2% | 489 đối tượng sau duyệt |
 
-- Lớp nào máy tệ nhất? Vì sao (dẫn ảnh)? <<>>
-- So với gold: precision / recall của **máy** <<>> (mẫu số: <<đối tượng gold>>)
+- Lớp máy cần review kỹ nhất là `motorbike` và `three_wheeler`: `motorbike` có 6 box bị xoá, 4 box được thêm và 2 box chỉnh sửa; `three_wheeler` có 8 box bị xoá và 2 box chỉnh sửa. Lỗi tăng ở các cảnh nhiều phương tiện và vật thể nhỏ.
+- So với gold: precision **44.3%** và recall **88.6%** của máy, trên 4 ảnh với **35 đối tượng gold** (`qc/review_stats.md`). Đây là kết quả in-sample và chỉ mang tính ước lượng.
 
 ## 3. Thiên kiến tự động hóa và ảnh bẫy
 
-- Bắt bẫy: <<.../12>>; loại nào lọt: <<>>; vì sao (bạn đã bỏ bước nào của checklist)? <<>>
-- Accepted cao mà bắt bẫy thấp (hoặc ngược lại) nói gì về cách bạn duyệt? <<>>
+- Bắt bẫy: **12/12 = 100%**; loose 3/3, extra 3/3, missing 3/3, wrong_class 3/3; không còn bẫy nào lọt (`qc/review_stats.md`). Kết quả cho thấy việc quét ảnh trước khi tin vào nhãn máy và kiểm tra theo từng loại lỗi đã hiệu quả.
+- Accepted cao (95.4%) đồng thời bắt bẫy đạt 100% cho thấy pre-label khá ổn ở nhiều box, nhưng vẫn cần review có hệ thống vì accepted không đồng nghĩa box luôn đúng.
 
 ## 4. Máy có đáng dùng không?
 
-- Thời gian (từ `time_log.csv`): gán tay <<... phút/ảnh>> vs duyệt <<... phút/ảnh>>. Thiên lệch (bạn gán gold trước nên đã quen cảnh): <<>>
-- Kết luận: <<có / không / chỉ cho lớp nào>>, dựa trên <<số liệu>>
+- Thời gian (từ `time_log.csv`): gán tay **15/4 = 3.75 phút/ảnh**; duyệt **90/24 = 3.75 phút/ảnh**. Có thể có thiên lệch do đã gán gold trước và đã quen với loại cảnh trong bộ dữ liệu.
+- Kết luận: **Có, nhưng chỉ dùng pre-label có review thủ công**. Máy giúp khởi tạo box, nhưng precision trên gold chỉ 44.3%, recall 88.6%; `motorbike` và `three_wheeler` cần kiểm tra kỹ.
 - **Ba quy tắc giảm thiên kiến của bạn** (mỗi quy tắc kiểm tra được bằng số hoặc việc làm):
-  1. <<>>
-  2. <<>>
-  3. <<>>
+  1. Quét toàn bộ ảnh trước khi nhìn hoặc tin vào box máy, rồi kiểm tra lần lượt bỏ sót → box dư → sai nhãn → sai vị trí.
+  2. Với cụm xe dày hoặc vật thể rất nhỏ, đối chiếu guideline và dùng `ignore_region` khi phù hợp thay vì cố gán từng vật.
+  3. Dùng ảnh bẫy và thống kê `accepted/edited/deleted/added` sau mỗi lô để kiểm tra chất lượng review, không chỉ dựa vào cảm giác.
 
 ## 5. Mask SAM cho 3 vật (Part 5)
 

@@ -1,2 +1,3 @@
 step,images,minutes,note
 gold_manual,4,15,gán nhãn thủ công 4 ảnh gold
+batch_review,24,90,review 24 ảnh pre-label và sửa lỗi
